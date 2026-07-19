@@ -1,3 +1,4 @@
+// components/SegmentedControl/types.ts
 import { HTMLAttributes } from 'react';
 
 export interface SegmentedOption {
@@ -11,4 +12,7 @@ export interface SegmentedControlProps extends HTMLAttributes<HTMLDivElement> {
   defaultValue?: string;
   onChange?: (value: string) => void;
   disabled?: boolean;
+  className?: string;
+  width?: string | number;  // 新增：自定义宽度
+  height?: string | number; // 新增：自定义高度
 }

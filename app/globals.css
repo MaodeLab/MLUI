@@ -1,9 +1,45 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #3b82f6;
-  --color-secondary: #64748b;
-  --color-success: #22c55e;
-  --color-danger: #ef4444;
-  --color-warning: #f59e0b;
+  /* 亮色模式 - 默认 */
+  --color-primary: #2C2C2E;
+  --color-primary-hover: #1A1A1C;
+  --color-primary-active: #0D0D0F;
+  --color-bg: #F8F8F7;
+  --color-bg-secondary: #EDEDEB;
+  --color-bg-hover: #E5E5E2;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-light: #F5F5F4;
+  --color-text: #2C2C2E;
+  --color-text-secondary: #6B6B68;
+  --color-text-muted: #9A9A97;
+  --color-border: #E0E0DD;
+  --color-ring: #2C2C2E;
+  --color-shadow: rgba(0, 0, 0, 0.08);
+}
+
+/* 暗色模式 */
+.dark {
+  --color-primary: #F7F7F7;
+  --color-primary-hover: #E0E0E0;
+  --color-primary-active: #C8C8C8;
+  --color-bg: #2C2C2E;
+  --color-bg-secondary: #3A3A3C;
+  --color-bg-hover: #48484A;
+  --color-bg-card: #545454;
+  --color-bg-card-light: #626264;
+  --color-text: #F7F7F7;
+  --color-text-secondary: #B8B8B8;
+  --color-text-muted: #8A8A8A;
+  --color-border: #4A4A4C;
+  --color-ring: #F7F7F7;
+  --color-shadow: rgba(0, 0, 0, 0.4);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
 }
