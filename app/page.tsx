@@ -2,6 +2,8 @@
 'use client';
 
 import { componentDemos } from '@/components';
+import type { ComponentDemo } from '@/components';
+import type { ComponentType } from 'react';
 
 export default function Home() {
   return (
@@ -12,7 +14,8 @@ export default function Home() {
         
         <div className="space-y-8">
           {componentDemos.map((demo, index) => {
-            const Component = demo.component;
+            // 使用类型断言，因为 demo.component 可能是任何组件
+            const Component = demo.component as ComponentType<any>;
             
             return (
               <div key={index} className="bg-white p-6 rounded-xl shadow-sm">
@@ -23,7 +26,7 @@ export default function Home() {
                   {demo.examples.map((example, idx) => (
                     <div key={idx} className="border-t pt-4 first:border-t-0 first:pt-0">
                       <p className="text-sm text-gray-400 mb-2">{example.label}</p>
-                      <Component {...example.props} />
+                      <Component key={`${index}-${idx}`} {...example.props} />
                     </div>
                   ))}
                 </div>
