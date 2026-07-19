@@ -1,18 +1,37 @@
 // components/index.ts
 export { Button } from './Button';
-export type { ButtonProps } from './Button/types';
 export { SegmentedControl } from './SegmentedControl';
-export type { SegmentedControlProps, SegmentedOption } from './SegmentedControl/types';
+export { Stepper } from './Stepper';
+export { Radio } from './Radio';
+export { Checkbox } from './Checkbox';
+export { Switch } from './Switch';
+export { Input } from './Input';
+export { Textarea } from './Textarea';
+export { Slider } from './Slider';
+export { Select } from './Select';
 
-// 导入所有组件的 demo 配置（使用默认导入）
 import buttonDemo from './Button/demo';
 import segmentedControlDemo from './SegmentedControl/demo';
+import stepperDemo from './Stepper/demo';
+import radioDemo from './Radio/demo';
+import checkboxDemo from './Checkbox/demo';
+import switchDemo from './Switch/demo';
+import inputDemo from './Input/demo';
+import textareaDemo from './Textarea/demo';
+import sliderDemo from './Slider/demo';
+import selectDemo from './Select/demo';
 
-// 统一导出配置列表
 export const componentDemos = [
   buttonDemo,
   segmentedControlDemo,
+  stepperDemo,
+  radioDemo,
+  checkboxDemo,
+  switchDemo,
+  inputDemo,
+  textareaDemo,
+  sliderDemo,
+  selectDemo,
 ] as const;
 
-// 类型推导
 export type ComponentDemo = typeof componentDemos[number];
