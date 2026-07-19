@@ -10,6 +10,8 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
   onChange,
   disabled = false,
   className = '',
+  width,
+  height,
   ...props
 }) => {
   const isControlled = controlledValue !== undefined;
@@ -32,7 +34,6 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
   const thumbRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // 使用 Refs 存储拖拽过程中的状态，避免闭包陷阱和频繁重渲染
   const isDraggingRef = useRef(false);
   const hasMovedRef = useRef(false);
   const dragStartXRef = useRef(0);
@@ -41,9 +42,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
   const clickHandledRef = useRef(false);
 
   const DRAG_THRESHOLD = 5;
-  const ANIMATION_DURATION = 0.4;
 
-  // 纯粹通过 React State 计算并更新 Thumb 位置（用于点击和初始化）
   const updateThumbState = useCallback((index: number) => {
     const track = trackRef.current;
     const option = optionRefs.current[index];
@@ -100,7 +99,6 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
     if (hoverIndex !== currentIndexRef.current) {
       currentIndexRef.current = hoverIndex;
 
-      // 性能关键：拖拽过程中直接操作 DOM，绝不触发 setState
       const track = trackRef.current;
       const thumb = thumbRef.current;
       const option = optionRefs.current[hoverIndex];
@@ -113,7 +111,6 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
         thumb.style.width = `${optionRect.width}px`;
       }
 
-      // 直接修改 active class，提供即时视觉反馈
       optionRefs.current.forEach((el, i) => {
         if (el) {
           if (i === hoverIndex) el.classList.add('active');
@@ -132,7 +129,6 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
     containerRef.current?.classList.remove('dragging');
 
     if (!wasDragging && pendingClickIndexRef.current >= 0 && !clickHandledRef.current) {
-      // 处理纯点击事件
       clickHandledRef.current = true;
       const index = pendingClickIndexRef.current;
       if (index !== currentIndexRef.current) {
@@ -142,7 +138,6 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
         onChange?.(options[index].value);
       }
     } else if (wasDragging) {
-      // 拖拽结束：统一同步 React State
       const index = currentIndexRef.current;
       setSelectedIndex(index);
 
@@ -180,7 +175,6 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
     window.addEventListener('pointercancel', handlePointerUp);
   }, [disabled, handlePointerMove, handlePointerUp]);
 
-  // 当外部传入的 value 或 options 变化时，同步状态和位置
   useEffect(() => {
     const targetValue = isControlled ? controlledValue : options[currentIndexRef.current]?.value;
     const index = Math.max(0, options.findIndex(opt => opt.value === targetValue));
@@ -197,7 +191,6 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
     return () => cancelAnimationFrame(raf);
   }, [controlledValue, options, isControlled, updateThumbState]);
 
-  // 监听窗口尺寸变化，重新定位 Thumb
   useEffect(() => {
     const handleResize = () => {
       updateThumbState(currentIndexRef.current);
@@ -206,7 +199,6 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, [updateThumbState]);
 
-  // 组件卸载时清理事件监听器
   useEffect(() => {
     return () => {
       window.removeEventListener('pointermove', handlePointerMove);
@@ -215,20 +207,35 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
     };
   }, [handlePointerMove, handlePointerUp]);
 
+  const containerStyle: React.CSSProperties = {};
+  if (width !== undefined) {
+    containerStyle.width = typeof width === 'number' ? `${width}px` : width;
+  }
+  if (height !== undefined) {
+    containerStyle.height = typeof height === 'number' ? `${height}px` : height;
+  }
+
+  const trackStyle: React.CSSProperties = {};
+  if (height !== undefined) {
+    trackStyle.height = typeof height === 'number' ? `${height}px` : height;
+  }
+
   return (
     <div className="flex flex-col items-center gap-5">
       <div
         ref={containerRef}
-        className={`relative flex w-[280px] items-center rounded-lg border-[1.5px] border-[#dee2ea] bg-white p-0.5 select-none transition-colors duration-200 ease leading-none ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-default'} ${className}`}
+        className={`relative flex min-w-[180px] min-h-[30px] items-center rounded-lg border-[1.5px] border-[var(--color-border)] bg-[var(--color-bg-card)] p-0.5 select-none transition-colors duration-200 ease leading-none ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-default'} ${className}`}
+        style={containerStyle}
         {...props}
       >
         <div
           ref={trackRef}
-          className="relative flex h-9 w-full items-center rounded-md bg-transparent isolate"
+          className="relative flex w-full min-h-[30px] items-center rounded-md bg-transparent isolate"
+          style={trackStyle}
         >
           <div
             ref={thumbRef}
-            className="absolute top-0 h-full rounded-md border-[1.5px] border-[#cdd5e0] bg-[#f0f3f8] z-[1] pointer-events-none will-change-[left,width] transition-[left,width] duration-[400ms] ease-[cubic-bezier(0.34,0.84,0.42,1.0)]"
+            className="absolute top-0 h-full rounded-md bg-[var(--color-bg-secondary)] z-[1] pointer-events-none will-change-[left,width] transition-[left,width] duration-[400ms] ease-[cubic-bezier(0.34,0.84,0.42,1.0)]"
             style={{
               left: `${thumbPos.left}px`,
               width: `${thumbPos.width}px`,
@@ -241,7 +248,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
               ref={(el) => {
                 if (el) optionRefs.current[index] = el;
               }}
-              className={`flex-1 flex items-center justify-center z-[2] ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'} ${index === selectedIndex ? 'font-semibold text-[#0f1825]' : 'font-medium text-[#5c6979]'} text-[15px] tracking-[0.2px] transition-colors duration-[250ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] rounded-md bg-transparent relative whitespace-nowrap h-full px-1 pointer-events-auto select-none`}
+              className={`flex-1 flex items-center justify-center z-[2] ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'} ${index === selectedIndex ? 'font-semibold text-[var(--color-text)]' : 'font-medium text-[var(--color-text-secondary)]'} text-[15px] tracking-[0.2px] transition-colors duration-[250ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] rounded-md bg-transparent relative whitespace-nowrap h-full px-1 pointer-events-auto select-none`}
               data-index={index}
               data-value={option.value}
               onPointerDown={(e) => handlePointerDown(e, index)}
