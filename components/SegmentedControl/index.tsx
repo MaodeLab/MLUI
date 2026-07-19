@@ -65,7 +65,6 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
     const trackRect = track.getBoundingClientRect();
     const x = clientX - trackRect.left;
 
-    // 修复：边界判断，防止移出左侧时返回错误的 index
     if (x <= 0) return 0;
     if (x >= trackRect.width) return options.length - 1;
 
@@ -101,7 +100,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
     if (hoverIndex !== currentIndexRef.current) {
       currentIndexRef.current = hoverIndex;
 
-      // ★ 性能关键：拖拽过程中直接操作 DOM，绝不触发 setState
+      // 性能关键：拖拽过程中直接操作 DOM，绝不触发 setState
       const track = trackRef.current;
       const thumb = thumbRef.current;
       const option = optionRefs.current[hoverIndex];
@@ -110,7 +109,6 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
         const trackRect = track.getBoundingClientRect();
         const optionRect = option.getBoundingClientRect();
         
-        // 直接修改 style，绕过 React 渲染，保证丝滑跟手
         thumb.style.left = `${optionRect.left - trackRect.left}px`;
         thumb.style.width = `${optionRect.width}px`;
       }
@@ -144,7 +142,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
         onChange?.(options[index].value);
       }
     } else if (wasDragging) {
-      // ★ 拖拽结束：统一同步 React State，防止位置闪回
+      // 拖拽结束：统一同步 React State
       const index = currentIndexRef.current;
       setSelectedIndex(index);
       
@@ -153,7 +151,6 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
       if (track && option) {
         const trackRect = track.getBoundingClientRect();
         const optionRect = option.getBoundingClientRect();
-        // 同步 state，使其与刚才直接操作的 DOM 保持一致
         setThumbPos({
           left: optionRect.left - trackRect.left,
           width: optionRect.width,
@@ -219,57 +216,22 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
   }, [handlePointerMove, handlePointerUp]);
 
   return (
-    <div className="segmented-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
+    <div className="flex flex-col items-center gap-5">
       <div
         ref={containerRef}
-        className={`segmented-control ${disabled ? 'disabled' : ''} ${className}`}
-        style={{
-          position: 'relative',
-          display: 'flex',
-          alignItems: 'center',
-          background: '#ffffff',
-          borderRadius: '40px',
-          padding: '4px',
-          width: '360px',
-          border: '1.5px solid #dee2ea',
-          userSelect: 'none',
-          transition: 'border-color 0.2s ease',
-          lineHeight: 1,
-          opacity: disabled ? 0.6 : 1,
-          cursor: disabled ? 'not-allowed' : 'default',
-        }}
+        className={`relative flex w-[360px] items-center rounded-[40px] border-[1.5px] border-[#dee2ea] bg-white p-1 select-none transition-colors duration-200 ease leading-none ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-default'} ${className}`}
         {...props}
       >
         <div
           ref={trackRef}
-          className="segment-track"
-          style={{
-            position: 'relative',
-            display: 'flex',
-            width: '100%',
-            height: '44px',
-            borderRadius: '36px',
-            background: 'transparent',
-            isolation: 'isolate',
-            alignItems: 'center',
-          }}
+          className="relative flex h-11 w-full items-center rounded-[36px] bg-transparent isolate"
         >
           <div
             ref={thumbRef}
-            className="active-thumb"
+            className="absolute top-0 h-full rounded-[32px] border-[1.5px] border-[#cdd5e0] bg-[#f0f3f8] z-[1] pointer-events-none will-change-[left,width] transition-[left,width] duration-[400ms] ease-[cubic-bezier(0.34,0.84,0.42,1.0)]"
             style={{
-              position: 'absolute',
-              top: 0,
-              height: '100%',
-              background: '#f0f3f8',
-              borderRadius: '32px',
-              border: '1.5px solid #cdd5e0',
-              zIndex: 1,
-              pointerEvents: 'none',
-              willChange: 'left, width',
               left: `${thumbPos.left}px`,
               width: `${thumbPos.width}px`,
-              transition: `left ${ANIMATION_DURATION}s cubic-bezier(0.34, 0.84, 0.42, 1.0), width ${ANIMATION_DURATION}s cubic-bezier(0.34, 0.84, 0.42, 1.0)`,
             }}
           />
 
@@ -279,38 +241,16 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
               ref={(el) => { 
                 if (el) optionRefs.current[index] = el; 
               }}
-              className={`segment-option ${index === selectedIndex ? 'active' : ''}`}
+              className={`flex-1 flex items-center justify-center z-[2] ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'} ${index === selectedIndex ? 'font-semibold text-[#0f1825]' : 'font-medium text-[#5c6979]'} text-[15px] tracking-[0.2px] transition-colors duration-[250ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] rounded-[36px] bg-transparent relative whitespace-nowrap h-full px-1 pointer-events-auto select-none`}
               data-index={index}
               data-value={option.value}
               onPointerDown={(e) => handlePointerDown(e, index)}
-              style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 2,
-                cursor: disabled ? 'not-allowed' : 'pointer',
-                fontWeight: index === selectedIndex ? 600 : 500,
-                fontSize: '15px',
-                letterSpacing: '0.2px',
-                color: index === selectedIndex ? '#0f1825' : '#5c6979',
-                transition: 'color 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                borderRadius: '36px',
-                background: 'transparent',
-                position: 'relative',
-                whiteSpace: 'nowrap',
-                height: '100%',
-                padding: '0 4px',
-                pointerEvents: 'auto',
-                userSelect: 'none',
-              }}
             >
               {option.label}
             </div>
           ))}
         </div>
       </div>
-
     </div>
   );
 };
