@@ -8,6 +8,7 @@ export { Switch } from './Switch';
 export { Input } from './Input';
 export { Textarea } from './Textarea';
 export { Slider } from './Slider';
+export { Select } from './Select';
 
 import buttonDemo from './Button/demo';
 import segmentedControlDemo from './SegmentedControl/demo';
@@ -18,6 +19,7 @@ import switchDemo from './Switch/demo';
 import inputDemo from './Input/demo';
 import textareaDemo from './Textarea/demo';
 import sliderDemo from './Slider/demo';
+import selectDemo from './Select/demo';
 
 export const componentDemos = [
   buttonDemo,
@@ -29,6 +31,7 @@ export const componentDemos = [
   inputDemo,
   textareaDemo,
   sliderDemo,
+  selectDemo,
 ] as const;
 
 export type ComponentDemo = typeof componentDemos[number];
