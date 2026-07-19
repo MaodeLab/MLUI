@@ -1,7 +1,5 @@
 // components/Stepper/types.ts
-import { HTMLAttributes } from 'react';
-
-export interface StepperProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
+export interface StepperProps {
   value?: number;
   defaultValue?: number;
   min?: number;

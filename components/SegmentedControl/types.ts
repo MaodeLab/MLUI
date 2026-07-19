@@ -6,13 +6,15 @@ export interface SegmentedOption {
   value: string;
 }
 
-export interface SegmentedControlProps extends HTMLAttributes<HTMLDivElement> {
+export interface SegmentedControlProps {
   options: SegmentedOption[];
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
   disabled?: boolean;
   className?: string;
-  width?: string | number;  // 新增：自定义宽度
-  height?: string | number; // 新增：自定义高度
+  width?: string | number;
+  height?: string | number;
+  id?: string;
+  style?: React.CSSProperties;
 }

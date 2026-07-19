@@ -12,7 +12,7 @@ const demo = {
       label: '默认状态',
       props: {
         defaultValue: 0,
-        onChange: (value) => console.log('当前值:', value)
+        onChange: (value: number) => console.log('当前值:', value)
       } as StepperProps
     },
     {
@@ -21,7 +21,7 @@ const demo = {
         defaultValue: 5,
         min: 0,
         max: 10,
-        onChange: (value) => console.log('当前值:', value)
+        onChange: (value: number) => console.log('当前值:', value)
       } as StepperProps
     },
     {
@@ -29,7 +29,7 @@ const demo = {
       props: {
         defaultValue: 0,
         step: 2,
-        onChange: (value) => console.log('当前值:', value)
+        onChange: (value: number) => console.log('当前值:', value)
       } as StepperProps
     },
     {
@@ -37,7 +37,7 @@ const demo = {
       props: {
         defaultValue: 0,
         size: 'sm',
-        onChange: (value) => console.log('当前值:', value)
+        onChange: (value: number) => console.log('当前值:', value)
       } as StepperProps
     },
     {
@@ -45,7 +45,7 @@ const demo = {
       props: {
         defaultValue: 0,
         size: 'lg',
-        onChange: (value) => console.log('当前值:', value)
+        onChange: (value: number) => console.log('当前值:', value)
       } as StepperProps
     },
     {
