@@ -6,6 +6,7 @@ export { Radio } from './Radio';
 export { Checkbox } from './Checkbox';
 export { Switch } from './Switch';
 export { Input } from './Input';
+export { Textarea } from './Textarea';
 
 import buttonDemo from './Button/demo';
 import segmentedControlDemo from './SegmentedControl/demo';
@@ -14,6 +15,7 @@ import radioDemo from './Radio/demo';
 import checkboxDemo from './Checkbox/demo';
 import switchDemo from './Switch/demo';
 import inputDemo from './Input/demo';
+import textareaDemo from './Textarea/demo';
 
 export const componentDemos = [
   buttonDemo,
@@ -23,6 +25,7 @@ export const componentDemos = [
   checkboxDemo,
   switchDemo,
   inputDemo,
+  textareaDemo,
 ] as const;
 
 export type ComponentDemo = typeof componentDemos[number];
